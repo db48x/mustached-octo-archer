@@ -15,6 +15,10 @@
   <%= @call.frequency %>
 </p>
 
+<p>
+  <b>Talkgroup:</b>
+  <%= @call.group_name %>
+</p>
 
 <%= link_to 'Edit', edit_call_path(@call) %> |
 <%= link_to 'Back', calls_path %>
