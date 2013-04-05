@@ -1,4 +1,9 @@
 class GroupsController < ApplicationController
+  before_filter :get_cities, :only => [:edit, :new]
+  def get_cities
+    @cities = City.all
+  end
+  
   # GET /groups
   # GET /groups.json
   def index

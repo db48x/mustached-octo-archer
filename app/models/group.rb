@@ -1,5 +1,5 @@
 class Group < ActiveRecord::Base
-  attr_accessible :name
+  attr_accessible :name, :city_id
   belongs_to :city
   has_many :calls
   validates :name, :uniqueness => { :scope => :city_id }

@@ -13,7 +13,9 @@
 
   <div class="field">
     <%= f.label :name %><br />
-    <%= f.text_field :name %>
+    <%= f.text_field :name %><br/>
+    <%= f.label :city %><br/>
+    <%= f.collection_select :city_id, @cities, :id, :name %>
   </div>
   <div class="actions">
     <%= f.submit %>
