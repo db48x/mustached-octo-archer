@@ -15,4 +15,8 @@ class Call < ActiveRecord::Base
   def group_name
     return group ? group.name : "UNKNOWN"
   end
+
+  def full_group_name
+    return group ? group.full_name : "UNKNOWN"
+  end
 end

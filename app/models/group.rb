@@ -5,4 +5,8 @@ class Group < ActiveRecord::Base
   validates :name, :uniqueness => { :scope => :city_id }
   validates_associated :city
   validates :city_id, :presence => true
+
+  def full_name
+    city ? "%s %s" % [city.name, name] : name
+  end
 end
