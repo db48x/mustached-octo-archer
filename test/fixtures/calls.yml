@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  start: 2013-04-04 20:11:10
+  end: 2013-04-04 20:11:10
+  frequency: MyString
+
+two:
+  start: 2013-04-04 20:11:10
+  end: 2013-04-04 20:11:10
+  frequency: MyString

@@ -1,4 +1,13 @@
 Scanner::Application.routes.draw do
+  resources :cities
+
+
+  resources :calls
+
+
+  resources :groups
+
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

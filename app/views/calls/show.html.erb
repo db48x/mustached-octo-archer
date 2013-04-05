@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Start:</b>
+  <%= @call.start %>
+</p>
+
+<p>
+  <b>End:</b>
+  <%= @call.end %>
+</p>
+
+<p>
+  <b>Frequency:</b>
+  <%= @call.frequency %>
+</p>
+
+
+<%= link_to 'Edit', edit_call_path(@call) %> |
+<%= link_to 'Back', calls_path %>
