@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130405031157) do
+ActiveRecord::Schema.define(:version => 20130405043333) do
 
   create_table "calls", :force => true do |t|
     t.datetime "start"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20130405031157) do
     t.string   "frequency"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "group_id"
   end
 
   create_table "cities", :force => true do |t|
@@ -31,8 +32,7 @@ ActiveRecord::Schema.define(:version => 20130405031157) do
     t.string   "name"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "city_id"
   end
-
-  add_index "groups", ["name"], :name => "index_groups_on_name", :unique => true
 
 end
