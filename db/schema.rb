@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130406064849) do
+ActiveRecord::Schema.define(:version => 20130406102249) do
 
   create_table "audios", :force => true do |t|
     t.datetime "created_at",        :null => false
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(:version => 20130406064849) do
     t.string   "data_content_type"
     t.integer  "data_file_size"
     t.datetime "data_updated_at"
+    t.integer  "call_id"
   end
 
   create_table "calls", :force => true do |t|
