@@ -5,8 +5,9 @@ Scanner::Application.routes.draw do
   resources :cities
 
 
-  resources :calls
-
+  resources :calls do
+    get 'recent', :on => :collection
+  end
 
   resources :groups
 

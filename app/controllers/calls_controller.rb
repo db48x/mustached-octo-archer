@@ -10,6 +10,17 @@ class CallsController < ApplicationController
     end
   end
 
+  # GET /calls/recent
+  # GET /calls/recent.json
+  def recent
+    @calls = Call.where("start >= ? AND audio_id IS NOT NULL", Time.now - 1.day)
+
+    respond_to do |format|
+      format.html { render "index" }
+      format.json { render json: @calls }
+    end
+  end
+
   # GET /calls/1
   # GET /calls/1.json
   def show
