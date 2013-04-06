@@ -20,9 +20,15 @@
   <%= @call.full_group_name %>
 </p>
 
+<% if @call.audio %>
 <p>
   <%= link_to "Audio", call_path(@call, :format => :mp3) %>
 </p>
+<% else %>
+<p>
+  <em>No Audio</em>
+</p>
+<% end %>
 
 <%= link_to 'Edit', edit_call_path(@call) %> |
 <%= link_to 'Back', calls_path %>

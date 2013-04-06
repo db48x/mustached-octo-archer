@@ -18,7 +18,13 @@ class CallsController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @call }
-      format.mp3 { send_file @call.audio.data.path, :type => @call.audio.data_content_type, :disposition => 'inline' }
+      format.mp3 {
+        if @call.audio
+          send_file @call.audio.data.path, :type => @call.audio.data_content_type, :disposition => 'inline'
+        else
+          redirect_to :status => 404
+        end
+      }
     end
   end
 
