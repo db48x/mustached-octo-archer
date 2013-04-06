@@ -40,10 +40,14 @@ class CallsController < ApplicationController
   # POST /calls
   # POST /calls.json
   def create
+    logger.debug "audio params: #{params[:audio]}"
+    @audio = Audio.new(params[:audio])
+    logger.debug "audio: #{@audio.inspect}"
     @call = Call.new(params[:call])
+    @call.audio = @audio
 
     respond_to do |format|
-      if @call.save
+      if @audio.save && @call.save
         format.html { redirect_to @call, notice: 'Call was successfully created.' }
         format.json { render json: @call, status: :created, location: @call }
       else

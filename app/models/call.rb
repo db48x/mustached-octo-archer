@@ -1,5 +1,5 @@
 class Call < ActiveRecord::Base
-  attr_accessible :end, :frequency, :start, :group_id
+  attr_accessible :end, :frequency, :start, :group_id, :audio_id
   belongs_to :group
   validates :start, :presence => true
   validates :end, :presence => true
@@ -11,6 +11,7 @@ class Call < ActiveRecord::Base
                                :less_than_or_equal_to => 0xFFFF },
                        :presence => true
   validates_associated :group
+  has_one :audo
 
   def group_name
     return group ? group.name : "UNKNOWN"

@@ -1,4 +1,7 @@
 Scanner::Application.routes.draw do
+  resources :audios
+
+
   resources :cities
 
 

@@ -38,3 +38,4 @@ gem 'jquery-rails'
 # gem 'debugger'
 
 gem 'date_validator'
+gem 'paperclip', '~> 3.0'
