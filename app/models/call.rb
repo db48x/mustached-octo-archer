@@ -11,7 +11,7 @@ class Call < ActiveRecord::Base
                                :less_than_or_equal_to => 0xFFFF },
                        :presence => true
   validates_associated :group
-  has_one :audo
+  has_one :audio
 
   def group_name
     return group ? group.name : "UNKNOWN"

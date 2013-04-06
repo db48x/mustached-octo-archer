@@ -40,10 +40,9 @@ class CallsController < ApplicationController
   # POST /calls
   # POST /calls.json
   def create
-    logger.debug "audio params: #{params[:audio]}"
     @audio = Audio.new(params[:audio])
-    logger.debug "audio: #{@audio.inspect}"
     @call = Call.new(params[:call])
+    @audio.call = @call
     @call.audio = @audio
 
     respond_to do |format|
