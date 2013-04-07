@@ -19,7 +19,7 @@ function Player(tableid, controlsid, calls) {
                                                prev: ignore,
                                                loaded: function (state, event, calls) {
                                                            displayCalls(calls);
-                                                           getCurrent();
+                                                           $(getCurrent()).attr("preload", "auto");
                                                            return "ready";
                                                        }
                                              },
@@ -67,6 +67,13 @@ function Player(tableid, controlsid, calls) {
         return current;
     }
     
+    function getNext(current, dir) {
+        var idx = $(current).data("idx") + dir;
+        if (idx >= 0 && idx < calls.length)
+            return $("#audio-"+ calls[idx].id).get(0);
+        return null;
+    }
+
     function setCurrent(v) {
         $(current).parent().parent().removeClass("current");
         $(v).parent().parent().addClass("current");
@@ -82,11 +89,14 @@ function Player(tableid, controlsid, calls) {
 
     function displayCalls(calls) {
         getTable().append(calls.map(function (call, idx) {
-            var audio = new Audio("/calls/"+ call.id +".oga");
-            audio.controls = "true";
-            audio.setAttribute("id", "audio-"+ call.id);
-            $(audio).data("idx", idx)
-                    .on('ended', player.next);;
+            var audio = $("<audio>",
+                          { preload: "none",
+                            src: "/calls/"+ call.id +".oga",
+                            controls: "true",
+                            id: "audio-"+ call.id
+                          });
+            audio.data("idx", idx)
+                 .on('ended', player.next);
             return makeRow([ makeTextCell(call.id),
                              makeTextCell(formatDate(call.start)),
                              makeTextCell(formatDate(call.end)),
@@ -128,6 +138,7 @@ function Player(tableid, controlsid, calls) {
         current.play();
         buttons.play.hide();
         buttons.pause.show();
+        $(getNext(current, 1)).attr("preload", "auto");
         return "playing";
     }
 
@@ -142,9 +153,10 @@ function Player(tableid, controlsid, calls) {
     function advance(event, state, dir) {
         var current = getCurrent();
         current.pause();
-        var idx = $(current).data("idx") + dir;
-        if (idx >= 0 && idx < calls.length) {
-            setCurrent($("#audio-"+ calls[idx].id).get(0));
+        current.currentTime = 0;
+        var next = getNext(current, dir);
+        if (next) {
+            setCurrent(next);
             if (state === "playing")
                 return play(event, state);
             return state;
