@@ -1,6 +1,5 @@
 function Player(tableid, controlsid, calls) {
-    var labels = ["id", "start", "end", "frequency", "group_id", "audio"];
-    var props = ["id", "start", "end", "frequency", "group_id"];
+    var labels = ["id", "start", "end", "frequency", "talkgroup", "audio"];
     var table, current;
 
     var fetcher = new StateMachine("fetcher",
@@ -83,17 +82,18 @@ function Player(tableid, controlsid, calls) {
 
     function displayCalls(calls) {
         getTable().append(calls.map(function (call, idx) {
-            var cells = props.map(function (prop) {
-                                      return makeTextCell(call[prop],
-                                                          { "class": prop });
-                                      });
             var audio = new Audio("/calls/"+ call.id +".oga");
             audio.controls = "true";
             audio.setAttribute("id", "audio-"+ call.id);
             $(audio).data("idx", idx)
                     .on('ended', player.next);;
-            cells.push(makeCell(audio));
-            return makeRow(cells, { id: "call-"+ call.id });
+            return makeRow([ makeTextCell(call.id),
+                             makeTextCell(formatDate(call.start)),
+                             makeTextCell(formatDate(call.end)),
+                             makeTextCell(call.frequency),
+                             makeTextCell(call.group_name),
+                             makeCell(audio)],
+                           { id: "call-"+ call.id });
         }));
     }
 

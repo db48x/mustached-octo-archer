@@ -17,3 +17,8 @@ function makeTextCell(label, props) {
 function makeCell(children, props) {
     return $("<td>", $.extend(props)).append(children);
 }
+
+function formatDate(d) {
+    return new Date(d).toLocaleString();
+    
+}

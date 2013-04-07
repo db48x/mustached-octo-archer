@@ -3,7 +3,7 @@
     $(document).ready(function () {
                           var player = new Player("#calls",
                                                   "#controls",
-                                                  <%= raw(ActiveSupport::JSON.encode(@calls)) %>);
+                                                  <%= raw(@calls) %>);
                       });
 </script>
 <% end %>
