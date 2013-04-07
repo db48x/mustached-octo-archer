@@ -1,1 +1,9 @@
-<script type="text/javascript">var calls = <%= raw(ActiveSupport::JSON.encode(@calls)) %></script>
+<% content_for :head do %>
+<script type="text/javascript">
+    $(document).ready(function () {
+                          var player = new Player("calls",
+                                                  <%= raw(ActiveSupport::JSON.encode(@calls)) %>);
+                      });
+</script>
+<% end %>
+<div id="calls"></div>
