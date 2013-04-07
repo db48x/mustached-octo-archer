@@ -1,5 +1,5 @@
 function Player(tableid, controlsid, calls) {
-    var labels = ["id", "start", "end", "frequency", "talkgroup", "audio"];
+    var labels = ["ID", "Start", "End", "Frequency", "Talkgroup", "Audio"];
     var table, current;
 
     var fetcher = new StateMachine("fetcher",
