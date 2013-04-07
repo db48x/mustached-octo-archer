@@ -13,7 +13,7 @@ class CallsController < ApplicationController
   # GET /calls/recent
   # GET /calls/recent.json
   def recent
-    @calls = Call.where("start >= ? AND audio_id IS NOT NULL", Time.now - 1.day)
+    @calls = Call.where("audio_id IS NOT NULL").order("start ASC").limit(50)
 
     respond_to do |format|
       format.html { render "index" }
