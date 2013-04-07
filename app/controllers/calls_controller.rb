@@ -13,8 +13,15 @@ class CallsController < ApplicationController
   # GET /calls/recent
   # GET /calls/recent.json
   def recent
-    @calls = Call.where("audio_id IS NOT NULL").order("start ASC").limit(50)
-
+    @calls = Call.where("audio_id IS NOT NULL").order("start ASC").limit(50).map do |call|
+      { :id => call.id,
+        :start => call.start,
+        :end => call.end,
+        :frequency => call.frequency,
+        :group_full_name => call.group.full_name,
+        :group_name => call.group.name }
+    end
+    
     respond_to do |format|
       format.html { render "index" }
       format.json { render json: @calls }
