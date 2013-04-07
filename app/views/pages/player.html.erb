@@ -1,9 +1,19 @@
 <% content_for :head do %>
 <script type="text/javascript">
     $(document).ready(function () {
-                          var player = new Player("calls",
+                          var player = new Player("#calls",
+                                                  "#controls",
                                                   <%= raw(ActiveSupport::JSON.encode(@calls)) %>);
                       });
 </script>
 <% end %>
+<h1>Walnut Creek</h1>
+<div id="controls">
+  <ul>
+    <li class="prev" style="top: -1px;"><a href="#non">&nbsp;</a></li>
+    <li class="play" style="left: -3px;"><a href="#non">&nbsp;</a></li>
+    <li class="pause" style="left: -3px; display: none;"><a href="#non">&nbsp;</a></li>
+    <li class="next" style="left: -3px; top: -1px;"><a href="#non">&nbsp;</a></li>
+  </ul>
+</div>
 <div id="calls"></div>

@@ -1,31 +1,7 @@
-function Player(id, calls) {    
-    var labels = ["start", "end", "frequency", "group_id", "id", "audio"];
-    var props = ["start", "end", "frequency", "group_id", "id"];
-
-    var getTable = (function () {
-                        var table;
-                        return function getTable() {
-                                   if (table) return table;
-                                   return table = makeTable(labels,
-                                                            { "class": "tracks" }).appendTo("#"+id);
-                               };
-                    })();
-
-    var displayCalls = (function () {
-                            var idx = 0;
-                            return function displayCalls(calls) {
-                                       getTable().append(calls.map(function (call) {
-                                                                       var cells = props.map(function (prop) {
-                                                                                                 return makeTextCell(call[prop],
-                                                                                                                     { "class": prop });
-                                                                                             });
-                                                                       var audio = new Audio("/calls/"+ call.id +".oga");
-                                                                       audio.controls = "true";
-                                                                       cells.push(makeCell(audio));
-                                                                       return makeRow(cells, { id: "track-"+ idx });
-                                                                   }));
-                            };
-                        })();
+function Player(tableid, controlsid, calls) {
+    var labels = ["id", "start", "end", "frequency", "group_id", "audio"];
+    var props = ["id", "start", "end", "frequency", "group_id"];
+    var table, current;
 
     var fetcher = new StateMachine("fetcher",
                                    "quiescent",
@@ -44,33 +20,82 @@ function Player(id, calls) {
                                                prev: ignore,
                                                loaded: function (state, event, calls) {
                                                            displayCalls(calls);
+                                                           getCurrent();
                                                            return "ready";
                                                        }
                                              },
-                                    ready: { play: ignore,
+                                    ready: { play: play,
                                              pause: ignore,
-                                             next: ignore,
-                                             prev: ignore,
+                                             next: next,
+                                             prev: prev,
                                              loaded: ignore
                                            },
                                     playing: { play: ignore,
-                                               pause: ignore,
-                                               next: ignore,
-                                               prev: ignore,
+                                               pause: pause,
+                                               next: next,
+                                               prev: prev,
                                                loaded: ignore
                                              },
-                                    paused: { play: ignore,
+                                    paused: { play: play,
                                               pause: ignore,
-                                              next: ignore,
-                                              prev: ignore,
+                                              next: next,
+                                              prev: prev,
                                               loaded: ignore
                                             }
                                   });
+
+    var controls = $(controlsid);
+    var buttons = { play: controls.find(".play"),
+                    pause: controls.find(".pause"),
+                    next: controls.find(".next"),
+                    prev: controls.find(".prev")
+                  };
+    buttons.play.on("click", player.play);
+    buttons.pause.on("click", player.pause);
+    buttons.next.on("click", player.next);
+    buttons.prev.on("click", player.prev);
 
     if (calls)
         player.loaded(calls);
     else
         fetcher.fetch();
+
+    function getCurrent() {
+        if (typeof current === "undefined") {
+            current = $("audio:first").get(0);
+            $(current).parent().parent().addClass("current");
+        }
+        return current;
+    }
+    
+    function setCurrent(v) {
+        $(current).parent().parent().removeClass("current");
+        $(v).parent().parent().addClass("current");
+        return current = v;
+    }
+    
+    function getTable() {
+        if (!table)
+            table = makeTable(labels,
+                              { "class": "tracks" }).appendTo(tableid);
+        return table;
+    };
+
+    function displayCalls(calls) {
+        getTable().append(calls.map(function (call, idx) {
+            var cells = props.map(function (prop) {
+                                      return makeTextCell(call[prop],
+                                                          { "class": prop });
+                                      });
+            var audio = new Audio("/calls/"+ call.id +".oga");
+            audio.controls = "true";
+            audio.setAttribute("id", "audio-"+ call.id);
+            $(audio).data("idx", idx)
+                    .on('ended', player.next);;
+            cells.push(makeCell(audio));
+            return makeRow(cells, { id: "call-"+ call.id });
+        }));
+    }
 
     function ignore(event, state) { return state; }
     function fetchMore(event, state, query) {
@@ -86,7 +111,7 @@ function Player(id, calls) {
         return "requesting";
     }
     function fetchSuccess(event, state, data, status, error) {
-        displayCalls(data);
+        player.loaded(data);
         return "quiescent";
     }
     function fetchFailure(event, state, data, status, error) {
@@ -96,5 +121,43 @@ function Player(id, calls) {
     }
     function fetchTimeout(event, state, data, status, error) {
         return fetcher.fetch();
+    }
+
+    function play(event, state) {
+        var current = getCurrent();
+        current.play();
+        buttons.play.hide();
+        buttons.pause.show();
+        return "playing";
+    }
+
+    function pause(event, state) {
+        var current = getCurrent();
+        current && current.pause();
+        buttons.pause.hide();
+        buttons.play.show();
+        return "paused";
+    }
+
+    function advance(event, state, dir) {
+        var current = getCurrent();
+        current.pause();
+        var idx = $(current).data("idx") + dir;
+        if (idx >= 0 && idx < calls.length) {
+            setCurrent($("#audio-"+ calls[idx].id).get(0));
+            if (state === "playing")
+                return play(event, state);
+            return state;
+        }
+        setCurrent();
+        return "ready";
+    }
+
+    function next(event, state) {
+        return advance(event, state, 1);
+    }
+    
+    function prev(event, state) {
+        return advance(event, state, -1);
     }
 }
