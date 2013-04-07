@@ -17,7 +17,7 @@ function Player(tableid, controlsid, calls) {
                                                pause: ignore,
                                                next: ignore,
                                                prev: ignore,
-                                               loaded: function (state, event, calls) {
+                                               loaded: function (event, state, calls) {
                                                            displayCalls(calls);
                                                            $(getCurrent()).attr("preload", "auto");
                                                            return "ready";
@@ -27,19 +27,31 @@ function Player(tableid, controlsid, calls) {
                                              pause: ignore,
                                              next: next,
                                              prev: prev,
-                                             loaded: ignore
+                                             loaded: function (event, state, data) {
+                                                         displayCalls(data);
+                                                         calls = calls.concat(data);
+                                                         return state;
+                                                     }
                                            },
                                     playing: { play: ignore,
                                                pause: pause,
                                                next: next,
                                                prev: prev,
-                                               loaded: ignore
+                                               loaded: function (event, state, data) {
+                                                           displayCalls(data);
+                                                           calls = calls.concat(data);
+                                                           return state;
+                                                       }
                                              },
                                     paused: { play: play,
                                               pause: ignore,
                                               next: next,
                                               prev: prev,
-                                              loaded: ignore
+                                              loaded: function (event, state, data) {
+                                                          displayCalls(data);
+                                                          calls = calls.concat(data);
+                                                          return state;
+                                                      }
                                             }
                                   });
 
@@ -76,7 +88,8 @@ function Player(tableid, controlsid, calls) {
 
     function setCurrent(v) {
         $(current).parent().parent().removeClass("current");
-        $(v).parent().parent().addClass("current");
+        if (v)
+            $(v).parent().parent().addClass("current");
         return current = v;
     }
     
@@ -138,7 +151,11 @@ function Player(tableid, controlsid, calls) {
         current.play();
         buttons.play.hide();
         buttons.pause.show();
-        $(getNext(current, 1)).attr("preload", "auto");
+        var next = getNext(current, 1);
+        if (next)
+            $(next).attr("preload", "auto");
+        else
+            fetcher.fetch();
         return "playing";
     }
 
@@ -153,7 +170,7 @@ function Player(tableid, controlsid, calls) {
     function advance(event, state, dir) {
         var current = getCurrent();
         current.pause();
-        current.currentTime = 0;
+        try { current.currentTime = 0; } catch (x) { }
         var next = getNext(current, dir);
         if (next) {
             setCurrent(next);
