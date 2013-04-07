@@ -1,5 +1,5 @@
 function Player(id, calls) {    
-    var labels = ["start", "end", "frequency", "group_id", "id"];
+    var labels = ["start", "end", "frequency", "group_id", "id", "audio"];
     var props = ["start", "end", "frequency", "group_id", "id"];
 
     var getTable = (function () {
@@ -19,6 +19,9 @@ function Player(id, calls) {
                                                                                                  return makeTextCell(call[prop],
                                                                                                                      { "class": prop });
                                                                                              });
+                                                                       var audio = new Audio("/calls/"+ call.id +".oga");
+                                                                       audio.controls = "true";
+                                                                       cells.push(makeCell(audio));
                                                                        return makeRow(cells, { id: "track-"+ idx });
                                                                    }));
                             };

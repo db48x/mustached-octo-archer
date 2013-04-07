@@ -13,3 +13,7 @@ function makeHeaderCell(label, props) {
 function makeTextCell(label, props) {
     return $("<td>", $.extend(props, { text: label }));
 }
+
+function makeCell(children, props) {
+    return $("<td>", $.extend(props)).append(children);
+}
